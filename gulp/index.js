@@ -20,7 +20,6 @@ gulp.task('prod', function(done) {
 
 // define stackable tasks
 gulp.task('clean', require('./tasks/clean')( gulp, config.clean ));
-gulp.task('images', require('./tasks/images')( gulp, bs, config.images ));
 gulp.task('scripts-app', require('./tasks/scripts-app')( gulp, bs, config.scripts, config.flags ));
 gulp.task('scripts-vendor', require('./tasks/scripts-vendor')( gulp, bs, config.scripts, config.flags ));
 gulp.task('static', require('./tasks/static')( gulp, bs, config.static ));
@@ -60,7 +59,7 @@ gulp.task('watch', function(done) {
 });
 
 // define user commands
-gulp.task('build', gulp.series( 'clean', 'tests', gulp.parallel( 'static', 'scripts', 'styles', 'images' ) ));
+gulp.task('build', gulp.series( 'clean', 'tests', gulp.parallel( 'static', 'scripts', 'styles') ));
 
 gulp.task('build-dev', gulp.series( 'dev', 'build' ));
 

@@ -24,11 +24,6 @@ var config = {
     dist: dest
   },
 
-  images: {
-    src: ['./static/images/**/*.{gif,jpg,png,svg}'],
-    dist: dest + '/images/'
-  },
-
   tests: {
     lint: {
       src: ['./app/**/*.js', '!app/vendor/**/*.js', './gulp/**/*.js', './tests/**/*.js']
