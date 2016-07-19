@@ -1,9 +1,11 @@
 'use strict';
 
 var config = {
-  wallImageSrc: 'images/concrete.jpg',
-  canvasWidth: 1920,
-  canvasHeight: 1080,
+  bgImageSrc: 'images/concrete.jpg',
+  imageWidth: 1920,
+  imageHeight: 1080,
+  canvasWidth: 700,
+  canvasHeight: 300,
   radius: 50
 };
 

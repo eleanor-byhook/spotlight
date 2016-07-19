@@ -1,14 +1,21 @@
 'use strict';
 
 var config = require('./config');
+var cw = config.canvasWidth;
+var ch = config.canvasHeight;
 
-var canvas = document.getElementById('wall');
-var ctx = canvas.getContext('2d');
-var cw = canvas.width;
-var ch = canvas.height;
-var wallImage = new Image();
-wallImage.src = config.wallImageSrc;
-wallImage.onload = function() {drawNormal(wallImage, ctx); };
+var bg = document.createElement('canvas');
+var bgCtx = bg.getContext('2d');
+bg.id = 'bg';
+bg.width = cw;
+bg.height = ch;
+var bgImage = new Image();
+bgImage.src = config.bgImageSrc;
+bgImage.onload = function() {drawNormal(bgImage, bgCtx); };
+var text = document.createTextNode("Background: ");
+document.body.appendChild(text);
+
+document.body.appendChild(bg);
 
 var filter = document.createElement('canvas');
 var filterCtx = filter.getContext('2d');
@@ -16,12 +23,34 @@ filter.id = 'filter';
 filter.width = cw;
 filter.height = ch;
 var filterImage = new Image();
-filterImage.src = 'images/rainbowtexture.png';
+filterImage.src = 'images/rainbow.jpg';
 filterImage.onload = function() {drawNormal(filterImage, filterCtx);}
+var text2 = document.createTextNode("Filter: ");
+document.body.appendChild(text2);
+
 document.body.appendChild(filter);
 
+var outputCanvas = document.createElement('canvas');
+var outputCtx = outputCanvas.getContext('2d');
+outputCanvas.id = 'canvas';
+outputCanvas.width = cw;
+outputCanvas.height = ch;
+
+var fillBlack = function() {
+  outputCtx.beginPath();
+  outputCtx.rect(0, 0, cw, ch);
+  outputCtx.fillStyle = 'black';
+  outputCtx.fill();
+};
+
+fillBlack();
+var text3 = document.createTextNode("Output Canvas: ");
+document.body.appendChild(text3);
+document.body.appendChild(outputCanvas);
+
+
 var drawNormal = function(image, ctx) {
-  ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, config.canvasWidth, config.canvasHeight);
+  ctx.drawImage(image, 0, 0, cw, ch);
 }
 
 /* Mouse controlled masking  */
@@ -36,19 +65,24 @@ reOffset();
 window.onscroll = function(e) { reOffset(); };
 window.onresize = function(e) { reOffset(); };
 
-canvas.addEventListener('mouseenter', function(e) { handleMouseMove(e); });
-canvas.addEventListener('mouseleave', function(e) { drawNormal(wallImage, ctx); });
+outputCanvas.addEventListener('mouseenter', function(e) { handleMouseEnter(e); });
+outputCanvas.addEventListener('mousemove', function(e) { handleMouseMove(e); });
+outputCanvas.addEventListener('mouseleave', function(e) { fillBlack(); });
+
+var handleMouseEnter = function(e) {
+  var bgPixels = Filters.getPixels(bgCtx);
+  var filterPixels = Filters.getPixels(filterCtx);
+  var filterData = Filters.multiply(filterPixels, bgPixels);
+  outputCtx.putImageData(filterData, 0, 0, 0, 0, cw, ch);
+
+}
 
 var handleMouseMove = function(e) {
-  var wallPixels = ctx.getImageData(0, 0, cw, ch);
-  var filterPixels = filterCtx.getImageData(0, 0, cw, ch);
-  var filterData = Filters.multiply(wallPixels, filterPixels);
-  ctx.putImageData(filterData, 0, 0);
   e.preventDefault();
   e.stopPropagation();
   var mouseX = parseInt(e.clientX - offsetX);
   var mouseY = parseInt(e.clientY - offsetY);
-//  draw(filterCtx, mouseX, mouseY, config.radius);
+  //draw(filterCtx, mouseX, mouseY, config.radius);
 }
 
 var draw = function(ctx, x, y, radius) {
