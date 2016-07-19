@@ -1,9 +1,9 @@
 'use strict';
 
 var config = {
-  wallImageSrc: 'images/rainbow.jpg',
-  wallImageWidth: 1920,
-  wallImageHeight: 1080,
+  wallImageSrc: 'images/concrete.jpg',
+  canvasWidth: 1920,
+  canvasHeight: 1080,
   radius: 50
 };
 
