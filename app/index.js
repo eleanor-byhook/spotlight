@@ -7,8 +7,16 @@ var cw = config.canvasWidth;
 var ch = config.canvasHeight;
 var iw = config.imageWidth;
 var ih = config.imageHeight;
+var leftThreshold = cw / 8;
+var rightThreshold = cw - (cw / 8);
+var mouse = {
+  x: 0,
+  y: 0,
+  lastX: 0,
+  lastY: 0
+};
 
-var drawNormal = function(image, ctx, x, y, width, height) {
+var drawImage = function(image, ctx, x, y, width, height) {
   ctx.drawImage(image, x, y, width, height);
 }
 
@@ -32,7 +40,7 @@ bg.width = cw;
 bg.height = ch;
 var bgImage = new Image();
 bgImage.src = config.bgImageSrc;
-bgImage.onload = function() { drawNormal(bgImage, bgCtx, -iw/4, -ih/3, iw, ih); };
+bgImage.onload = function() { drawImage(bgImage, bgCtx, -iw/4, -ih/3, iw, ih); };
 addText('Background: ');
 document.body.appendChild(bg);
 
@@ -44,7 +52,7 @@ filter.width = cw;
 filter.height = ch;
 var filterImage = new Image();
 filterImage.src = config.filterImageSrc;
-filterImage.onload = function() { drawNormal(filterImage, filterCtx, 0, 0, cw, ch); };
+filterImage.onload = function() { drawImage(filterImage, filterCtx, 0, 0, cw, ch); };
 addText('Filter: ');
 document.body.appendChild(filter);
 
@@ -77,11 +85,33 @@ outputCanvas.addEventListener('mousemove', function(e) { flashlight(e); });
 var flashlight = function(e) {
   e.preventDefault();
   e.stopPropagation();
-  var mouseX = parseInt(e.clientX - offsetX);
-  var mouseY = parseInt(e.clientY - offsetY);
+  mouse.lastX = mouse.x;
+  mouse.lastY = mouse.y;
+  mouse.x = parseInt(e.clientX - offsetX);
+  mouse.y = parseInt(e.clientY - offsetY);
+
+  if(mouse.x >= rightThreshold && mouse.x > mouse.lastX){
+    console.log('Pan Right');
+    var mouseDiff = mouse.x - rightThreshold;
+    drawImage(bgImage, bgCtx, -iw/4 - mouseDiff, -ih/3, iw, ih);
+
+  } else if(mouse.x >= rightThreshold && mouse.x < mouse.lastX){
+    //pan left to return to center image
+    var mouseDiff = mouse.x - rightThreshold;
+    drawImage(bgImage, bgCtx, -iw/4 - mouseDiff, -ih/3, iw, ih);
+
+  }else if(mouse.x <= leftThreshold && mouse.x < mouse.lastX){
+    console.log('Pan Left');
+    var mouseDiff = leftThreshold - mouse.x;
+    drawImage(bgImage, bgCtx, -iw/4 + mouseDiff, -ih/3, iw, ih);
+  }else if (mouse.x <= leftThreshold && mouse.x > mouse.lastX){
+    //pan right to return to center image
+    var mouseDiff = leftThreshold - mouse.x;
+    drawImage(bgImage, bgCtx, -iw/4 + mouseDiff, -ih/3, iw, ih);
+  };
 
   var bgPixels = Filters.getPixels(bgCtx, 0, 0, cw, ch);
-  var filterPixels = Filters.getPixels(filterCtx, cw/2 - mouseX, ch/2 - mouseY, cw, ch);
+  var filterPixels = Filters.getPixels(filterCtx, cw/2 - mouse.x, ch/2 - mouse.y, cw, ch);
   var filterData = Filters.multiply(bgPixels, filterPixels);
   outputCtx.putImageData(filterData, 0, 0);
 }
