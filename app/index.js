@@ -5,9 +5,11 @@ var Filters = require('./filters');
 
 var cw = config.canvasWidth;
 var ch = config.canvasHeight;
+var iw = config.imageWidth;
+var ih = config.imageHeight;
 
-var drawNormal = function(image, ctx) {
-  ctx.drawImage(image, 0, 0, cw, ch);
+var drawNormal = function(image, ctx, x, y, width, height) {
+  ctx.drawImage(image, x, y, width, height);
 }
 
 var addText = function(text) {
@@ -22,33 +24,38 @@ var fillBlack = function() {
   outputCtx.fill();
 };
 
-var addCanvas = function(image, id, text){
-  var canvas = document.createElement('canvas');
-  var ctx = canvas.getContext('2d');
-  canvas.id = id;
-  canvas.width = cw;
-  canvas.height = ch;
-  var canvasImage = new Image();
-  if(image) {
-    canvasImage.src = image;
-    canvasImage.onload = function() { drawNormal(canvasImage, ctx); };
-  };
-  addText(text);
-  document.body.appendChild(canvas);
-  return canvas;
-}
-
 /* Background Canvas */
-var bg = addCanvas(config.bgImageSrc, 'bg', 'Background: ');
+var bg = document.createElement('canvas');
 var bgCtx = bg.getContext('2d');
+bg.id = 'bg';
+bg.width = cw;
+bg.height = ch;
+var bgImage = new Image();
+bgImage.src = config.bgImageSrc;
+bgImage.onload = function() { drawNormal(bgImage, bgCtx, -iw/4, -ih/3, iw, ih); };
+addText('Background: ');
+document.body.appendChild(bg);
 
 /* Filter Canvas */
-var filter = addCanvas(config.filterImageSrc, 'filter', 'Filter: ');
+var filter = document.createElement('canvas');
 var filterCtx = filter.getContext('2d');
+filter.id = 'filter';
+filter.width = cw;
+filter.height = ch;
+var filterImage = new Image();
+filterImage.src = config.filterImageSrc;
+filterImage.onload = function() { drawNormal(filterImage, filterCtx, 0, 0, cw, ch); };
+addText('Filter: ');
+document.body.appendChild(filter);
 
 /* Output Canvas */
-var outputCanvas = addCanvas(null, 'canvas', 'Output Canvas: ');
+var outputCanvas = document.createElement('canvas');
 var outputCtx = outputCanvas.getContext('2d');
+outputCanvas.id = 'output';
+outputCanvas.width = cw;
+outputCanvas.height = ch;
+addText('Output Canvas: ');
+document.body.appendChild(outputCanvas);
 fillBlack();
 
 /* Set the offset of the mouse location relative to the output Canvas*/
@@ -64,6 +71,8 @@ window.onscroll = function(e) { reOffset(); };
 window.onresize = function(e) { reOffset(); };
 
 outputCanvas.addEventListener('mousemove', function(e) { flashlight(e); });
+
+/*Flashlight method */
 
 var flashlight = function(e) {
   e.preventDefault();
