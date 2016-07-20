@@ -2,13 +2,21 @@
 
 var config = require('./config');
 var Filters = require('./filters');
+var Panning = require('./panning');
 
 var cw = config.canvasWidth;
 var ch = config.canvasHeight;
 var iw = config.imageWidth;
 var ih = config.imageHeight;
-var leftThreshold = cw / 8;
-var rightThreshold = cw - (cw / 8);
+
+//locations that cause panning
+var threshold = {
+  left: cw / 8,
+  right: cw - (cw / 8),
+  top: ch / 4,
+  bottom: ch - (ch / 4)
+};
+
 var mouse = {
   x: 0,
   y: 0,
@@ -90,29 +98,11 @@ var flashlight = function(e) {
   mouse.x = parseInt(e.clientX - offsetX);
   mouse.y = parseInt(e.clientY - offsetY);
 
-  if(mouse.x >= rightThreshold && mouse.x > mouse.lastX){
-    console.log('Pan Right');
-    var mouseDiff = mouse.x - rightThreshold;
-    drawImage(bgImage, bgCtx, -iw/4 - mouseDiff, -ih/3, iw, ih);
-
-  } else if(mouse.x >= rightThreshold && mouse.x < mouse.lastX){
-    //pan left to return to center image
-    var mouseDiff = mouse.x - rightThreshold;
-    drawImage(bgImage, bgCtx, -iw/4 - mouseDiff, -ih/3, iw, ih);
-
-  }else if(mouse.x <= leftThreshold && mouse.x < mouse.lastX){
-    console.log('Pan Left');
-    var mouseDiff = leftThreshold - mouse.x;
-    drawImage(bgImage, bgCtx, -iw/4 + mouseDiff, -ih/3, iw, ih);
-  }else if (mouse.x <= leftThreshold && mouse.x > mouse.lastX){
-    //pan right to return to center image
-    var mouseDiff = leftThreshold - mouse.x;
-    drawImage(bgImage, bgCtx, -iw/4 + mouseDiff, -ih/3, iw, ih);
-  };
+  Panning(mouse, threshold, bgImage, bgCtx, drawImage);
 
   var bgPixels = Filters.getPixels(bgCtx, 0, 0, cw, ch);
   var filterPixels = Filters.getPixels(filterCtx, cw/2 - mouse.x, ch/2 - mouse.y, cw, ch);
   var filterData = Filters.multiply(bgPixels, filterPixels);
   outputCtx.putImageData(filterData, 0, 0);
-}
+};
 
