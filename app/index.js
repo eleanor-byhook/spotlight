@@ -48,7 +48,7 @@ bg.width = cw;
 bg.height = ch;
 var bgImage = new Image();
 bgImage.src = config.bgImageSrc;
-bgImage.onload = function() { drawImage(bgImage, bgCtx, -iw/4, -ih/3, iw, ih); };
+bgImage.onload = function() { drawImage(bgImage, bgCtx, -iw/4, -ih/4, iw, ih); };
 addText('Background: ');
 document.body.appendChild(bg);
 
@@ -88,6 +88,12 @@ window.onresize = function(e) { reOffset(); };
 
 outputCanvas.addEventListener('mousemove', function(e) { flashlight(e); });
 
+/*
+outputCanvas.addEventListener('mouseleave', function(e) { 
+  drawImage(bgImage, bgCtx, -iw/4, -ih/4, iw, ih);
+});
+
+*/
 /*Flashlight method */
 
 var flashlight = function(e) {
