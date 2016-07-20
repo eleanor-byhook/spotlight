@@ -33,19 +33,19 @@ var Panning = function(mouse, threshold, bgImage, bgCtx, drawImage) {
     var mouseDiffY = 0;
     if(mouse.y <= threshold.top && mouse.y <= mouse.lastY) {
       /*Pan to the top */
-      mouseDiffY = (threshold.top - mouse.y) * 1.25;
+      mouseDiffY = (threshold.top - mouse.y) * 4;
 
     } else if(mouse.y <= threshold.top && mouse.y > mouse.lastY) {
       //pan down to return to center
-      mouseDiffY = (threshold.top - mouse.y) * 1.25;
+      mouseDiffY = (threshold.top - mouse.y) * 4;
 
     }else if(mouse.y >= threshold.bottom && mouse.y >= mouse.lastY){
       /* Pan to the bottom */
-      mouseDiffY = -(mouse.y - threshold.bottom) * 1.25;
+      mouseDiffY = -(mouse.y - threshold.bottom) * 4;
       
     }else if(mouse.y >= threshold.bottom && mouse.y < mouse.lastY){
       //pan up to return to center
-      mouseDiffY = -(mouse.y - threshold.bottom) * 1.25;
+      mouseDiffY = -(mouse.y - threshold.bottom) * 4;
     };
 
     return mouseDiffY;
@@ -62,9 +62,10 @@ var Panning = function(mouse, threshold, bgImage, bgCtx, drawImage) {
  yLocation = yLocation > 0 ? 0 : yLocation;
 
  //prevents pan from going further than the image's width
- xLocation = xLocation + iw <=  0 ? -iw + cw : xLocation;
+ xLocation = iw - cw + xLocation <=  0 ? -cw : xLocation;
  xLocation = xLocation > 0 ? 0 : xLocation;
 
+ console.log('xlocation', xLocation, 'mouse.x', mouse.x, 'image width', iw, 'canvas width', cw);
  drawImage(bgImage, bgCtx, xLocation, yLocation, iw, ih);
 };
 
