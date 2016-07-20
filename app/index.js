@@ -9,7 +9,7 @@ var ch = config.canvasHeight;
 var iw = config.imageWidth;
 var ih = config.imageHeight;
 
-//locations that cause panning
+//thresholds for panning
 var threshold = {
   left: cw / 8,
   right: cw - (cw / 8),
@@ -99,7 +99,6 @@ var flashlight = function(e) {
   mouse.y = parseInt(e.clientY - offsetY);
 
   Panning(mouse, threshold, bgImage, bgCtx, drawImage);
-
   var bgPixels = Filters.getPixels(bgCtx, 0, 0, cw, ch);
   var filterPixels = Filters.getPixels(filterCtx, cw/2 - mouse.x, ch/2 - mouse.y, cw, ch);
   var filterData = Filters.multiply(bgPixels, filterPixels);
