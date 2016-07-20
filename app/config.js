@@ -1,7 +1,8 @@
 'use strict';
 
 var config = {
-  bgImageSrc: 'images/concrete.jpg',
+  bgImageSrc: 'images/rainbow.jpg',
+  filterImageSrc: 'images/spotlight.png',
   imageWidth: 1920,
   imageHeight: 1080,
   canvasWidth: 700,
