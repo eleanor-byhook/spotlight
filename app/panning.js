@@ -11,19 +11,19 @@ var Panning = function(mouse, threshold, bgImage, bgCtx, drawImage) {
 
     if(mouse.x > threshold.right && mouse.x >= mouse.lastX){
       /*Pan to the right */
-      mouseDiffX = -(mouse.x - threshold.right) * 4;
+      mouseDiffX = -(mouse.x - threshold.right) * 2;
 
     } else if(mouse.x > threshold.right && mouse.x < mouse.lastX){
       //pan left to return to center image
-      mouseDiffX = -(mouse.x - threshold.right) * 4;
+      mouseDiffX = -(mouse.x - threshold.right) * 2;
 
     }else if(mouse.x <= threshold.left && mouse.x <= mouse.lastX){
       /* Pan to the left */
-      mouseDiffX = (threshold.left - mouse.x) * 4;
+      mouseDiffX = (threshold.left - mouse.x) * 2;
 
     }else if (mouse.x <= threshold.left && mouse.x > mouse.lastX){
       //pan right to return to center image
-      mouseDiffX = (threshold.left - mouse.x) * 4;
+      mouseDiffX = (threshold.left - mouse.x) * 2;
     };
 
     return mouseDiffX;
@@ -33,19 +33,19 @@ var Panning = function(mouse, threshold, bgImage, bgCtx, drawImage) {
     var mouseDiffY = 0;
     if(mouse.y <= threshold.top && mouse.y <= mouse.lastY) {
       /*Pan to the top */
-      mouseDiffY = (threshold.top - mouse.y) * 4;
+      mouseDiffY = (threshold.top - mouse.y) * 2;
 
     } else if(mouse.y <= threshold.top && mouse.y > mouse.lastY) {
       //pan down to return to center
-      mouseDiffY = (threshold.top - mouse.y) * 4;
+      mouseDiffY = (threshold.top - mouse.y) * 2;
 
     }else if(mouse.y >= threshold.bottom && mouse.y >= mouse.lastY){
       /* Pan to the bottom */
-      mouseDiffY = -(mouse.y - threshold.bottom) * 4;
+      mouseDiffY = -(mouse.y - threshold.bottom) * 2;
       
     }else if(mouse.y >= threshold.bottom && mouse.y < mouse.lastY){
       //pan up to return to center
-      mouseDiffY = -(mouse.y - threshold.bottom) * 4;
+      mouseDiffY = -(mouse.y - threshold.bottom) * 2;
     };
 
     return mouseDiffY;
@@ -65,7 +65,6 @@ var Panning = function(mouse, threshold, bgImage, bgCtx, drawImage) {
  xLocation = iw - cw + xLocation <=  0 ? -cw : xLocation;
  xLocation = xLocation > 0 ? 0 : xLocation;
 
- console.log('xlocation', xLocation, 'mouse.x', mouse.x, 'image width', iw, 'canvas width', cw);
  drawImage(bgImage, bgCtx, xLocation, yLocation, iw, ih);
 };
 
