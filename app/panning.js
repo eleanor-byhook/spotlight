@@ -1,6 +1,8 @@
 var config = require('./config');
 var iw = config.imageWidth;
 var ih = config.imageHeight;
+var cw = config.canvasWidth;
+var ch = config.canvasHeight;
 
 var Panning = function(mouse, threshold, bgImage, bgCtx, drawImage) {
 
@@ -52,7 +54,18 @@ var Panning = function(mouse, threshold, bgImage, bgCtx, drawImage) {
  var panDistanceX = panX();
  var panDistanceY = panY();
 
- drawImage(bgImage, bgCtx, -iw/4 + panDistanceX, -ih/4 + panDistanceY, iw, ih);
+ var xLocation = -iw/4 + panDistanceX;
+ var yLocation = -ih/4 + panDistanceY;
+
+//prevents pan from going further than the image's height
+ yLocation = ih + yLocation <= ch ? -ih - ch : yLocation;
+ yLocation = yLocation > 0 ? 0 : yLocation;
+
+ //prevents pan from going further than the image's width
+ xLocation = xLocation + iw <=  0 ? -iw + cw : xLocation;
+ xLocation = xLocation > 0 ? 0 : xLocation;
+
+ drawImage(bgImage, bgCtx, xLocation, yLocation, iw, ih);
 };
 
 module.exports = Panning;
