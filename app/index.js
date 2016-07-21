@@ -11,8 +11,8 @@ var ih = config.imageHeight;
 
 //thresholds for panning
 var threshold = {
-  left: cw / 8,
-  right: cw - (cw / 8),
+  left: cw / 4,
+  right: cw - (cw / 4),
   top: ch / 4,
   bottom: ch - (ch / 4)
 };
@@ -40,6 +40,17 @@ var fillBlack = function() {
   outputCtx.fill();
 };
 
+/* Output Canvas */
+var outputCanvas = document.createElement('canvas');
+var outputCtx = outputCanvas.getContext('2d');
+outputCanvas.id = 'output';
+outputCanvas.width = cw;
+outputCanvas.height = ch;
+addText('Output Canvas: ');
+document.body.appendChild(outputCanvas);
+fillBlack();
+
+
 /* Background Canvas */
 var bg = document.createElement('canvas');
 var bgCtx = bg.getContext('2d');
@@ -63,16 +74,6 @@ filterImage.src = config.filterImageSrc;
 filterImage.onload = function() { drawImage(filterImage, filterCtx, 0, 0, cw, ch); };
 addText('Filter: ');
 document.body.appendChild(filter);
-
-/* Output Canvas */
-var outputCanvas = document.createElement('canvas');
-var outputCtx = outputCanvas.getContext('2d');
-outputCanvas.id = 'output';
-outputCanvas.width = cw;
-outputCanvas.height = ch;
-addText('Output Canvas: ');
-document.body.appendChild(outputCanvas);
-fillBlack();
 
 /* Set the offset of the mouse location relative to the output Canvas*/
 var offsetX;
@@ -104,10 +105,6 @@ var flashlight = function(e) {
   mouse.x = parseInt(e.clientX - offsetX);
   mouse.y = parseInt(e.clientY - offsetY);
 
-  Panning(mouse, threshold, bgImage, bgCtx, drawImage);
-  var bgPixels = Filters.getPixels(bgCtx, 0, 0, cw, ch);
-  var filterPixels = Filters.getPixels(filterCtx, cw/2 - mouse.x, ch/2 - mouse.y, cw, ch);
-  var filterData = Filters.multiply(bgPixels, filterPixels);
-  outputCtx.putImageData(filterData, 0, 0);
+  Panning(mouse, threshold, bgImage, bgCtx, filterCtx, outputCtx, drawImage);
 };
 
