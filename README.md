@@ -16,5 +16,5 @@ Chrome 44+, Firefox 40+, Safari 8+, Opera 30+, Edge, IE10+
 
 `gulp`
 
-![Flashlight-demo](/static/images/SpotlightDemo.gif)
+![Spotlight-demo](/static/images/SpotlightDemo.gif)
 
