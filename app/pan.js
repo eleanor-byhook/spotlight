@@ -58,25 +58,20 @@ var Panning = function(mouse, bgImage, bgCtx) {
     return (mouseDiffY);
   };
 
-
-
-  function draw(){
-    bgCtx.drawImage(bgImage, xLocation, yLocation, imageWidth, imageHeight);
-  }
-
+  //centered image X and Y plus our new pan offset
   var xLocation = -imageWidth/4 + panX();
   var yLocation = -imageHeight/4 + panY();
 
   //prevents pan from going further than the image's height
   yLocation = imageHeight - canvasHeight + yLocation <= 0 ? -(imageHeight - canvasHeight): yLocation;
-  //console.log('yLocation: ' + yLocation, 'image Height: ' + imageHeight, 'canvasHeight: ' + canvasHeight);
   yLocation = yLocation > 0 ? 0 : yLocation;
 
   //prevents pan from going further than the image's width
   xLocation = imageWidth - canvasWidth + xLocation <=  0 ? -canvasWidth : xLocation;
   xLocation = xLocation > 0 ? 0 : xLocation;
 
-  draw();
+  //Finally!  We draw the new background
+  bgCtx.drawImage(bgImage, xLocation, yLocation, imageWidth, imageHeight);
 };
 
 
