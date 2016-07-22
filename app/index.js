@@ -2,7 +2,8 @@
 
 var config = require('./config');
 var Filters = require('./filters');
-var Panning = require('./panning');
+var PanSpeed = require('./panspeed');
+var PanArea = require('./panarea');
 
 var cw = config.canvasWidth;
 var ch = config.canvasHeight;
@@ -15,6 +16,13 @@ var threshold = {
   right: cw - (cw / 4),
   top: ch / 4,
   bottom: ch - (ch / 4)
+};
+
+var laggyMouse = {
+  x: 0,
+  y: 0,
+  lastX: 0,
+  lastY: 0
 };
 
 var mouse = {
@@ -83,28 +91,33 @@ function reOffset() {
   offsetX = BB.left;
   offsetY = BB.top;
 }
+
+var saveMouseLocation = function(e){
+  mouse.x = parseInt(e.clientX - offsetX);
+  mouse.y = parseInt(e.clientY - offsetY);
+  laggyMouse.x = mouse.x;
+  laggyMouse.y = mouse.y;
+};
+
+/*Flashlight method */
+var flashlight = function() {
+  panSpeed.update();
+  PanArea(panSpeed, threshold, bgImage, bgCtx, drawImage);
+  var bgPixels = Filters.getPixels(bgCtx, 0, 0, config.canvasWidth, config.canvasHeight);
+  var filterPixels = Filters.getPixels(filterCtx, config.canvasWidth/2 - mouse.x, config.canvasHeight/2 - mouse.y, config.canvasWidth, config.canvasHeight);
+  var filterData = Filters.multiply(bgPixels, filterPixels);
+  outputCtx.putImageData(filterData, 0, 0);
+ };
+
 reOffset();
 window.onscroll = function(e) { reOffset(); };
 window.onresize = function(e) { reOffset(); };
+outputCanvas.addEventListener('mousemove', function(e) { saveMouseLocation(e); });
 
-outputCanvas.addEventListener('mousemove', function(e) { flashlight(e); });
+var panSpeed = new PanSpeed( laggyMouse );
 
-/*
-outputCanvas.addEventListener('mouseleave', function(e) { 
-  drawImage(bgImage, bgCtx, -iw/4, -ih/4, iw, ih);
-});
+//redraw the flashlight and bg every .1 seconds
+window.setInterval(flashlight, 10);
 
-*/
-/*Flashlight method */
 
-var flashlight = function(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  mouse.lastX = mouse.x;
-  mouse.lastY = mouse.y;
-  mouse.x = parseInt(e.clientX - offsetX);
-  mouse.y = parseInt(e.clientY - offsetY);
-
-  Panning(mouse, threshold, bgImage, bgCtx, filterCtx, outputCtx, drawImage);
-};
 
