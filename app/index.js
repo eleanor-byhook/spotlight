@@ -10,17 +10,18 @@ var canvasHeight = config.canvasHeight;
 var imageWidth = config.imageWidth;
 var imageHeight = config.imageHeight;
 
+var startX = canvasWidth / 2;
+var startY = canvasHeight / 2;
+
 //location of the background that lags behind the realtime mouse
 var lagLocation = {
-  x: 0,
-  y: 0,
-  lastX: 0,
-  lastY: 0
+  x: startX,
+  y: startY,
 };
 
 var mouse = {
-  x: 0,
-  y: 0,
+  x: startX,
+  y: startY,
 };
 
 var addText = function(text) {
@@ -95,7 +96,6 @@ var flashlight = function() {
   outputCtx.putImageData(filterData, 0, 0);
  };
 
-
 /* All the action:
  * Get correct mouse offset
  * Store mouse location every time the mouse moves
@@ -103,9 +103,11 @@ var flashlight = function() {
  */
 
 reOffset();
+
 window.onscroll = function(e) { reOffset(); };
 window.onresize = function(e) { reOffset(); };
-var panLag = new PanLag( lagLocation );
 outputCanvas.addEventListener('mousemove', function(e) { saveMouseLocation(e); });
+
+var panLag = new PanLag( lagLocation );
 window.setInterval(flashlight, 10);
 

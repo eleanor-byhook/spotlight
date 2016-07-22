@@ -1,10 +1,15 @@
 'use strict'; 
 
+var config = require('./config');
+
+var startX = config.canvasWidth / 2;
+var startY = config.canvasHeight / 2;
+
 var PanLag = function(target) {
-  this.friction = {x:0.95, y:0.95};
+  this.friction = {x:0.97, y:0.97};
   this.velocity = {x:0, y:0};
-  this.x = 0;
-  this.y = 0;
+  this.x = startX;
+  this.y = startY;
   this.target = target;
 };
 
