@@ -69,8 +69,8 @@ bg.id = 'bg';
 bg.width = canvasWidth;
 bg.height = canvasHeight;
 var bgImage = new Image();
-bgImage.src = config.bgImageSrc;
 bgImage.onload = function() { bgCtx.drawImage(bgImage, -imageWidth/4, -imageHeight/4, imageWidth, imageHeight); };
+bgImage.src = config.bgImageSrc;
 addText('Background: ');
 document.body.appendChild(bg);
 
@@ -81,10 +81,38 @@ filter.id = 'filter';
 filter.width = canvasWidth;
 filter.height = canvasHeight;
 var filterImage = new Image();
+filterImage.onload = function() {requestAnimationFrame(animate);};
 filterImage.src = config.filterImageSrc;
-filterImage.onload = function() { filterCtx.drawImage(filterImage, 0, 0, canvasWidth, canvasHeight); };
 addText('Filter: ');
 document.body.appendChild(filter);
+
+
+/*Initial animation for filter canvas - 'turning on the flashlight' effect */
+var scale = 1;
+var scaleSpeed = 1;
+var y = 1;
+
+var animate = function(time) {
+  if(scale > 0) {
+    requestAnimationFrame(animate); //if this gets too expensive, consider caching calls to animate
+  }
+  filterCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+  filterCtx.drawImage(
+      filterImage, 
+      0, //x of original image
+      0, //y of original image
+      imageWidth, //width
+      imageHeight, //height
+      canvasWidth / 2 - Math.round(imageWidth/4 * scale / 100), //x of output canvas
+      canvasHeight / 2 - Math.round((imageHeight/4 * scale / 100)) -23, //y of output canvas minus an offset value that is specific to this image.
+      imageWidth * scale / 100, //width of transformed image
+      imageHeight * scale / 100 //height of transformed image
+  );  
+  scale += scale/3;
+  if(scale >= 100) {
+    scale = 100;
+  }
+}
 
 /*Flashlight method */
 var flashlight = function() {
