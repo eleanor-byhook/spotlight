@@ -69,7 +69,6 @@ bg.id = 'bg';
 bg.width = canvasWidth;
 bg.height = canvasHeight;
 var bgImage = new Image();
-//bgImage.onload = function() { bgCtx.drawImage(bgImage, -imageWidth/4, -imageHeight/4, imageWidth, imageHeight); };
 bgImage.onload = function() { requestAnimationFrame(zoomOutBackground); };
 bgImage.src = config.bgImageSrc;
 addText('Background: ');
@@ -84,6 +83,7 @@ filter.height = canvasHeight;
 var filterImage = new Image();
 filterImage.onload = function() {requestAnimationFrame(powerOnFlashlight);};
 filterImage.src = config.filterImageSrc;
+//filterImage.onload = function() {filterCtx.drawImage(filterImage, 0, 0, canvasWidth, canvasHeight);};
 addText('Filter: ');
 document.body.appendChild(filter);
 
@@ -92,7 +92,7 @@ var bgScale = 160;
 var bgScaleSpeed = 0.5;
 var bgScaleDone = false;
 
-var zoomOutBackground = function(time) {
+var zoomOutBackground = function() {
   if(bgScale > 100 && !bgScaleDone) {
     requestAnimationFrame(zoomOutBackground); 
   }
@@ -126,22 +126,26 @@ var scale = 1;
 var scaleSpeed = 3;
 var finishFlashlightTurnOn = false;
 
-var powerOnFlashlight = function(time) {
+var powerOnFlashlight = function() {
   if(scale > 0 && !finishFlashlightTurnOn) {
     requestAnimationFrame(powerOnFlashlight); 
   }
-  if(!finishFlashlightTurnOn) {
+  if(!finishFlashlightTurnOn){
+    var newX = canvasWidth / 2 - (canvasWidth/2 * scale / 100);
+    var newY = canvasHeight / 2 - (canvasHeight/2 * scale / 100);
+    var newWidth = canvasWidth * scale / 100;
+    var newHeight = canvasHeight * scale / 100;
     filterCtx.clearRect(0, 0, canvasWidth, canvasHeight);
     filterCtx.drawImage(
         filterImage, 
         0, //x of original image
         0, //y of original image
-        imageWidth, //width
-        imageHeight, //height
-        canvasWidth / 2 - Math.round(imageWidth/4 * scale / 100), //x of output canvas
-        canvasHeight / 2 - Math.round((imageHeight/4 * scale / 100)) -23, //y of output canvas minus an offset value that is specific to this image.
-        imageWidth * scale / 100, //width of transformed image
-        imageHeight * scale / 100 //height of transformed image
+        canvasWidth, //width
+        canvasHeight, //height
+        newX, //x of output canvas
+        newY, //y of output canvas minus an offset value that is specific to this image.
+        newWidth, //width of transformed image
+        newHeight//height of transformed image
     );  
     scale += scaleSpeed;
     if(scale >= 100) {
@@ -151,6 +155,7 @@ var powerOnFlashlight = function(time) {
     }
   }
 }
+
 /* image data for initial load, no interaction */
 var initialLoad = function() {
   var bgPixels = bgCtx.getImageData(0, 0, canvasWidth, config.canvasHeight);
