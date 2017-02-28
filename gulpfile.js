@@ -12,3 +12,32 @@
  */
 
 require('./gulp');
+var stuff = 5;
+
+if(stuff < 5) {
+    console.log("hi");
+} else {
+    stuff = 6;
+
+    var thing= 'hu';
+
+    let stuff = 'hi';
+    console.log("maybe");
+}
+
+if(stuff === 6){
+    let i;
+	i + 1;
+    eval(5);
+    eval(6);
+}
+
+var ObjectFun = {
+    hats: 2,
+}
+
+if(Object.Fun.hats){
+
+}
+
+ObjectFun.shoes = 3;
