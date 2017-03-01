@@ -13,20 +13,24 @@
 
   "globals": {
     # e.g. "angular": true
+    "global": true,
     "__dirname": false,
     "app": false,
     "page": false,
     "Polymer": false,
     "process": false,
-    "require": false
+    "require": false,
+    "module": false
   },
 
   "parserOptions": {
       "sourceType": "module",
+      "ecmaFeatures": {
+          "jsx": true
+        }
   },
 
   "plugins": [
-    "html"
     # e.g. "react" (must run `npm install eslint-plugin-react` first)
   ],
 
@@ -67,7 +71,7 @@
     "array-callback-return": 1,  # enforce return statements in callbacks of array methods
     "block-scoped-var": 1,      # treat var statements as if they were block scoped (off by default)
     "class-methods-use-this": 0, # enforce that class methods utilize 'this'
-    "complexity": 0,            # specify the maximum cyclomatic complexity allowed in a program (off by default)
+    "complexity": 2,            # specify the maximum cyclomatic complexity allowed in a program (off by default)
     "consistent-return": 1,     # require return statements to either always or never specify values
     "curly": 1,                 # specify curly brace conventions for all control statements
     "default-case": 0,          # require default case in switch statements (off by default)
@@ -127,7 +131,7 @@
 
     # Strict Mode
 
-    "strict": 1,          # controls location of Use Strict Directives
+    "strict": 0,          # controls location of Use Strict Directives
 
 
     # Variables
